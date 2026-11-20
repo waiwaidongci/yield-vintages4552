@@ -1,49 +1,52 @@
 {
-  "id": "gb-0049",
-  "direction": "口径版本与透视",
-  "title": "砚泉试制良率口径簿",
-  "slug": "yield-vintages",
-  "algorithm": "版本化良率分母规则、加权汇总与按线/班次差异归因",
-  "entities": "YieldLot / DenominatorPolicy / YieldRun / Approval / DeliverySchedule",
-  "scenario": "试制批次一次通过/返工/报废→冻结口径版本与加权透视→主管复核交付；历史快照不随口径改写",
-  "visual": "质检印章、栗棕朱红",
-  "oracle": "分母规则手算；大批小批汇总不能均值；更新规则旧run不变",
+  "id": "gb-0050",
+  "direction": "竞争风险与查账日版本",
+  "title": "砚泉售后批次返修风险曲线簿",
+  "slug": "aftersales-cif",
+  "algorithm": "Aalen-Johansen 竞争风险累计发生函数（返修/报废）+ 查账日 as-of 版本化 + 增量重算",
+  "entities": "Line / BatchVersion / OutcomeVersion / AuditJob / CurvePoint / ReasonStat",
+  "scenario": "各线随访长短不一，按查账日可见版本核算出厂后返修/报废累计风险；迟报更正只影响新查账日，整条曲线一次性切换",
+  "visual": "查账册页、黛蓝与旧朱",
+  "oracle": "同日先入组再核算最后删失；竞争事件共用同一在险分母；历史查账日曲线冻结不被改写",
   "frontend": 18253,
   "backend": 19253,
   "db_port": 17753,
   "database": "MySQL8",
   "batch": 2,
-  "label": "试制批次",
-  "policy_label": "良率分母版本",
+  "label": "售后随访批次",
   "fields": {
-    "period": "日期",
-    "department": "试制线",
-    "shift": "班次",
-    "input": "投入数",
-    "first_pass": "一次通过数",
-    "reworked_good": "返工合格数",
-    "scrap": "报废数"
+    "batch_no": "批次号",
+    "line_code": "随访线编号",
+    "ship_date": "出厂日期",
+    "enroll_date": "入组日期",
+    "record_date": "记录到账日期"
+  },
+  "outcome_fields": {
+    "batch_no": "批次号",
+    "outcome": "结局类型",
+    "event_date": "结局发生日期",
+    "reason": "失败原因",
+    "record_date": "到账日期"
   },
   "example": {
-    "period": "2026-11-17",
-    "department": "试制线A",
-    "shift": "早班",
-    "input": 1000,
-    "first_pass": 850,
-    "reworked_good": 100,
-    "scrap": 50
+    "batch_no": "B001",
+    "line_code": "L-A",
+    "ship_date": "2026-01-05",
+    "enroll_date": "2026-01-07",
+    "record_date": "2026-01-08"
   },
-  "policy": {
-    "version": "一次通过-v1",
-    "numerator": "first_pass",
-    "denominator": "input",
-    "description": "一次通过良率；返工仍计入投入分母"
+  "outcome_example": {
+    "batch_no": "B001",
+    "outcome": "repair",
+    "event_date": "2026-02-01",
+    "reason": "密封件老化",
+    "record_date": "2026-02-03"
   },
   "colors": [
-    "0.94 0.025 68",
-    "0.3 0.06 38",
-    "0.52 0.15 28"
+    "0.93 0.03 230",
+    "0.28 0.07 250",
+    "0.5 0.17 25"
   ],
-  "caption": "口径版本冻结 · 汇总按分母加权",
+  "caption": "查账日冻结 · Aalen-Johansen 累计返修风险",
   "unit": "%"
 }

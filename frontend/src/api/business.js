@@ -1,6 +1,14 @@
-import {request} from './client.js';
-export const loadAll=async()=>Object.fromEntries(await Promise.all(['sources','periods','policies','runs','schedules','deliveries','audits'].map(async k=>[k,await request('/'+k)])));
-export const saveSource=(data,id)=>request('/sources'+(id?'/'+id:''),id?'PUT':'POST',{data});
-export const savePolicy=data=>request('/policies','POST',{data});
-export const submitRun=data=>request('/runs','POST',data);
-export const approveRun=(id,note)=>request('/runs/'+id+'/approve','POST',{note});
+import { request } from './client.js';
+
+export const loadAll = async () => Object.fromEntries(await Promise.all([
+  ['lines', '/lines'], ['batches', '/batches'], ['outcomes', '/outcomes'],
+  ['jobs', '/audits/jobs'], ['logs', '/audits/logs'],
+].map(async ([k, p]) => [k, await request(p)])));
+
+export const createLine = data => request('/lines', 'POST', { data });
+export const saveBatch = data => request('/batches', 'POST', { data });
+export const registerOutcome = (action, data) => request('/outcomes/' + action, 'POST', { data });
+export const enqueueAudit = audit_date => request('/audits/jobs', 'POST', { audit_date });
+export const retryAudit = id => request(`/audits/jobs/${id}/retry`, 'POST', {});
+export const loadCurves = id => request(`/audits/jobs/${id}/curves`);
+export const loadReasons = id => request(`/audits/jobs/${id}/reasons`);

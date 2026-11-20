@@ -1,1 +1,5 @@
-export async function action(fn){const box=document.querySelector('#notice');try{box.textContent='正在处理…';await fn();box.textContent='操作已完成'}catch(e){box.textContent=e.message;box.classList.add('error')} }
+export async function action(fn) {
+  const box = document.querySelector('#notice');
+  try { box.textContent = '正在处理…'; box.classList.remove('error'); await fn(); box.textContent = '操作已完成'; }
+  catch (e) { box.textContent = e.message; box.classList.add('error'); }
+}
